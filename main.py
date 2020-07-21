@@ -724,4 +724,4 @@ channel = client.get_channel(719505792667091018)
 await channel.send("<@307448724089733120>")'''
 
 
-client.run('NzE5MTgyMTYwNjQ4NjAxNjgx.Xtzs4w.vX5ssJwd-5JB6inJ5vbC9Q1KPac')
+client.run('Holy shit I forgot to delete the token on the first ver')
