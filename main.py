@@ -784,4 +784,4 @@ async def on_message(message: discord.Message):
 
 
 
-client.run('Mzc2NjI1OTM0NTk1NTIyNTYw.Wf62PA.SPX-xZiIr92It7f-mMgD9YkYRq0')
+client.run('#')
