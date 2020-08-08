@@ -10,6 +10,7 @@ from async_timeout import timeout
 import requests
 import re
 import requests
+import sys , select
 import urllib.request
 from bs4 import BeautifulSoup
 import datetime
@@ -17,7 +18,7 @@ import asyncio
 import ffmpeg
 
 client = commands.Bot(command_prefix = 'st!')
-
+versiona = 1.216
 for filename in os.listdir('./data'):
     if filename.endswith('.py'):
         client.load_extension(f'data.{filename[:-3]}')
@@ -38,11 +39,11 @@ stat = ['Trying to find love',
 'Initiating destruction sequence',
 'Loving myself',
 'He will not escape',
-'version 27.12'
+f'version {versiona}'
 ]
 
 
-
+users = [307448724089733120,286771477401960450]
 
 @client.event
 async def on_ready():
@@ -69,12 +70,11 @@ async def on_member_leave(member):
 
 
 @client.command(aliases = ['tell','converse','convey'],pass_context=True)
-async def say(ctx, *, question):
-    response = question
-    await ctx.send(question)
-    await client.delete_message(message)
+async def say(ctx, *, context):
+    await ctx.send(context)
 
-@client.command(pass_context=True)
+
+@client.command(aliases = ['purge'],pass_context=True)
 @has_permissions(administrator=True, manage_messages=True, manage_roles=True)
 async def clear(ctx, amount=5):
     await ctx.channel.purge(limit=amount+1)
@@ -100,7 +100,6 @@ async def ping(ctx):
 @client.command(aliases = ['hb','HB'])
 async def honsballs(ctx, *, question):
 
-
     if "69" in question or "Nont" in question:
         await ctx.send(f"You have typed: **{question}**\nMy answer: Don't ask me about these stuffs")
 
@@ -113,8 +112,11 @@ async def honsballs(ctx, *, question):
         fuck.seed(newseed)
         await ctx.send(f'You have typed: **{question}**\nMy answer: **{fuck.choice(answers)}**')
 
-@client.command(aliases = ['21'])
+@client.command(aliases = ['21','21balls','21ball'])
 async def twentyoneballs(ctx, *, question):
+        if str(question) in users or "Nont" in question:
+            await ctx.send(f"You have typed: **{question}**\nMy answer: Don't ask me about these stuffs")
+
         answers = ['No.','Never possible','Definitely not','Inevitable','Possibly so','I suppose you might be correct','I think you are correct','That is wrong, trust me','Go ask Nont','I can not answer.','Correct.','Bitch dont ask me this shit','I am not sure','Your question held too much value for my simple brain to process','Yes','Without a doubt','There is a possibility','Clearly so','It will be slowly but surely.']
         newseed = str(question).lower()+"hakke" +str(ctx.message.author.id)
         fuck.seed(newseed)
@@ -130,23 +132,32 @@ async def pick(ctx, *,question):
 @client.command()
 async def ship(ctx, *,question):
     listeee = question.split(" and ")
-    newseed =  str(question).lower() + "Venus"
-    fuck.seed(newseed)
+    newseed =  ''.join(question).lower() + "Venus"
+    newseed2 = "".join(sorted(newseed))
+    fuck.seed(newseed2)
     randoms = fuck.randint(0, 100)
 
-    await ctx.send(f"I suppose {question}'s compatability would be \n**{randoms}%**")
-    if random == 100:
-        await ctx.send("What a luck!")
-    elif randoms > 80:
-        await ctx.send("I think it would go well!")
-    elif random > 50:
-        await ctx.send("Could go either way I guess?")
-    elif random > 10:
-        await ctx.send("Might not go well?")
-    elif random > 0:
-        await ctx.send("My condolences")
+    if "nont" in question.lower():
+        await ctx.send("What are you trying to do?")
+
+    elif "307448724089733120" in str(question):
+        await ctx.send("What are you trying to do?")
+
     else:
-        await ctx.send("....")
+
+        if randoms == 100:
+            await ctx.send("What a luck!")
+        elif randoms > 80:
+            await ctx.send("I think it would go well!")
+        elif randoms > 50:
+            await ctx.send("Could go either way I guess?")
+        elif randoms > 10:
+            await ctx.send("Might not go well?")
+        elif randoms > 0:
+            await ctx.send("My condolences")
+        else:
+            await ctx.send("....")
+        await ctx.send(f"I suppose **{question}**'s compatability would be \n**{randoms}%**")
 
 @client.command()
 async def echo(ctx, * ,relm):
@@ -183,6 +194,19 @@ async def sudo(ctx, sudo ,name):
         else:
             await ctx.send(f"{name}'s card of the day is **{beyond}** reversed")
 
+    if sudo == "echo":
+        melon = name.split("//")
+        channel = client.get_channel(int(melon[0]))
+        del melon[0]
+        watermelon = " ".join(melon)
+        await channel.send(watermelon)
+
+    if sudo == "l_echo":
+        melon = name.split("/////")
+        channel = client.get_channel(int(melon[0]))
+        await channel.send(melon[1])
+
+
     if sudo == "getid":
         await ctx.send(ctx.message.mentions[0].id)
 
@@ -200,11 +224,28 @@ async def sudo(ctx, sudo ,name):
         resultant = str(fuck.choice(bullshit))
         await ctx.send(resultant)
 
-    if sudo == "admin" and name == "69":
-        if ctx.message.author.id == 307448724089733120:
+    if sudo == "connect":
+        await name.connect()
+
+    if sudo == "disconnect":
+        await name.voice_client.disconnect()
+
+    if sudo == "admin" and name == "691":
+        if ctx.message.author.id == 307448724089733120 or 286771477401960450:
+
+            user= client.get_user(286771477401960450)
+            print(f"Sending to {user}")
+            await user.send("Someone used the sudo admin command UWU")
             manual.start()
         else:
             await ctx.send("Don't bother trying what you can't do.")
+
+    if sudo == "dunked":
+        if int(name) == 307448724089733120 or 286771477401960450:
+            await ctx.send("I don't think you're being wise my dude.")
+        else:
+            await client.ban(int(name), delete_message_days=0)
+
 #jump
 
 
@@ -442,14 +483,13 @@ async def fortune(ctx):
     await ctx.send(resultant)
 
 
-
 @client.command()
 async def draw(ctx,* ,amount):
     global listeeee
     global tarotdeck
     fuck.seed()
     amount = int(amount)
-    drawn = fuck.choices(listeeee,k=amount)
+    drawn = fuck.sample(listeeee,amount)
     voi = ""
     c = len(drawn)
     c -= 1
@@ -499,12 +539,13 @@ async def shame(ctx, member : discord.Member):
         shames = ['You are a... piece of shit!',
         'you..... are... a... bad... person...?',
         'burn in hell you godless barbarian',
-        'you should see a neurologist because I think your brain stopped working',
-        "Are you there? Sorry I don't see a subhuman like you",
-        'You xeno scum',
-        'Trash is better than you',
-        'A toilet paper will not dissolve as easily as you will',
-        'You are good.... for nothing']
+        'you should see a neurologist because I think your brain stopped working.',
+        "Are you there? Sorry I don't see a sub-human like you.",
+        'You xeno scum.',
+        'Trash is better than you.',
+        'A toilet paper will not dissolve as easily as you will.',
+        'You possessed the same amount of braincells as 29th president of Thailand'
+        'You are good.... for nothing.']
         await ctx.send(f"<@{ctx.message.mentions[0].id}>,  {fuck.choice(shames)}")
 
 
@@ -518,8 +559,9 @@ async def proud(ctx):
 
 @client.command()
 async def libra(ctx, member : discord.Member):
+    global users
 
-    if str(ctx.message.mentions[0].id) == "307448724089733120":
+    if str(ctx.message.mentions[0].id) in users:
 
         num1 = "Undefined"
         num2 = "Inconceivable"
@@ -579,9 +621,10 @@ async def unload(ctx, extension):
 
 
 @client.command()
-@has_permissions(administrator=True, manage_messages=True, manage_roles=True)
+#@has_permissions(administrator=True, manage_messages=True, manage_roles=True)
 async def r_pung(ctx, member : discord.Member):
-    if discord.Member.id == "307448724089733120":
+    global users
+    if ctx.message.mentions[0].id in users:
         await ctx.send("What exactly are you trying to do?")
 
     else:
@@ -593,15 +636,42 @@ async def r_pung(ctx, member : discord.Member):
             await ctx.send(f"PING <@{ctx.message.mentions[0].id}>")
             await ctx.send(f"PENG <@{ctx.message.mentions[0].id}>")
             await ctx.send(f"PONG <@{ctx.message.mentions[0].id}>")
-            await ctx.send(f"Bye bitch <@{ctx.message.mentions[0].id}>")
-    #await client.leave_server(message.server)
+            await ctx.send(f"PUNG <@{ctx.message.mentions[0].id}>")
+        await ctx.send(f"Bye bitch <@{ctx.message.mentions[0].id}>")
+
+
+'''
+definers = []
+@client.command()
+async def append(ctx,*,extender):
+    global definers
+    definers.append(str(extender))
+
+@client.command()
+async def picked(ctx,*,amount):
+    fuck.seed()
+    global definers
+    orders = fuck.sample(definers,int(amount))
+    new = ', '.join(orders)
+
+    await ctx.send(new)
+
+@client.command()
+async def remappend(ctx):
+    global definers
+    definers = []
+
+@client.command()
+async def shown(ctx):
+    global definers
+    await ctx.send(definers)
 
 
 @client.command()
-@has_permissions(administrator=True, manage_messages=True, manage_roles=True)
 async def pung(ctx, member : discord.Member):
-
-    if discord.Member.id == "307448724089733120":
+    global users
+#
+    if ctx.message.mentions[0].id  in users:
         await ctx.send("What exactly are you trying to do?")
 
     else:
@@ -610,10 +680,11 @@ async def pung(ctx, member : discord.Member):
             await ctx.send(f"PING <@{ctx.message.mentions[0].id}>")
             await ctx.send(f"PENG <@{ctx.message.mentions[0].id}>")
             await ctx.send(f"PONG <@{ctx.message.mentions[0].id}>")
+'''
 
-
-
-
+@client.command()
+async def pfp(ctx,member: discord.Member):
+    await ctx.send(member.avatar_url)
 
 
 
@@ -624,17 +695,6 @@ async def on_command_error(ctx, error):
         ans = ['Failed to complie:\nError event: Lack of additional argument.\nPlease refrain from being brain dead and fill in all the requirements.','Failed to complie:\nError event: Lack of additional argument.']
         ans = fuck.choice(ans)
         await ctx.send(ans)
-
-
-async def status_change():
-    await client.wait_until_ready()
-    global stat
-
-    fuck.seed()
-    rand = fuck.choice(stat)
-    await client.change_presence(status=discord.Status.idle,activity = discord.Game(rand))
-
-
 
 @tasks.loop(seconds=10)
 async def define():
@@ -649,12 +709,17 @@ async def define():
 
 #jump
 
+
+
+
 @tasks.loop(seconds=1)
 async def manual():
-
     inp = input("ID please: ")
     inp = int(inp)
     channel = client.get_channel(inp)
+
+
+
     await channel.send("Manual override detected. Ceasing fuctions.")
     while True:
         try:
@@ -668,11 +733,24 @@ async def manual():
             print("Exception occured.")
 
     await client.wait_until_ready()
-#nepu = input("")
-#await channel.send(nepu)
-    #ser= client.get_user(307448724089733120)        #307448724089733120
-    #print(f"Sending to {user}")
-    #await user.send("Test.")
+
+
+
+
+@client.command(description='syntax: x to y',pass_context=True)
+async def rand(ctx,*,number):
+    listeee = number.split(" to ")
+    fuck.seed()
+    try:
+        await ctx.send(f"I suppose I would pick {fuck.randint(int(listeee[0]),int(listeee[1]))}")
+    except:
+        await ctx.send("Not sure if you aren't typing numbers or you are making the 2nd value more than the first.")
+
+
+@client.command()
+async def version(ctx):
+    global versiona
+    await ctx.send(f"It should be **{versiona}**")
 
 
 
@@ -690,8 +768,11 @@ async def on_message(message: discord.Message):
 
     try:
         id = message.guild.id    #exception raiser
-        a = (f"{message.author}: '{message.content}' was sent in {message.guild}")
-        print(a)
+        if message.content == '':
+            print(f"A picture or something like that was sent by {message.author}")
+        else:
+            a = (f"{message.author}: '{message.content}' was sent in {message.guild}")
+            print(a)
 
         stored = 1
     except:
@@ -699,29 +780,8 @@ async def on_message(message: discord.Message):
         stored = 1
         print(a)
 
-    #await channel.send(a)
     await client.process_commands(message)
 
 
 
-"""
-@client.command()
-async def vc(ctx):
-    channel = ctx.author.voice.channel
-    for untakenvar in range(0,10):
-        await channel.connect()
-        await asyncio.sleep(0.18)
-        await ctx.voice_client.disconnect()
-        await asyncio.sleep(0.2)
-        await ctx.send("HEWWOOOOOOOOOO")
-"""
-
-
-
-'''print("looping")
-await client.wait_until_ready()
-channel = client.get_channel(719505792667091018)
-await channel.send("<@307448724089733120>")'''
-
-
-client.run('Holy shit I forgot to delete the token on the first ver')
+client.run('Mzc2NjI1OTM0NTk1NTIyNTYw.Wf62PA.SPX-xZiIr92It7f-mMgD9YkYRq0')
