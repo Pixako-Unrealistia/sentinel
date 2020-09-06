@@ -213,8 +213,6 @@ async def sudo(ctx, sudo ,name):
     if sudo == "":
         await ctx.send("Void detected?")
 
-    if sudo == "":
-        print("wat")
 
     if sudo == "fortune":
         dated = datetime.date.today()
@@ -561,7 +559,7 @@ async def proud(ctx):
 async def libra(ctx, member : discord.Member):
     global users
 
-    if str(ctx.message.mentions[0].id) in users:
+    if ctx.message.mentions[0].id in users:
 
         num1 = "Undefined"
         num2 = "Inconceivable"
@@ -601,7 +599,11 @@ async def libra(ctx, member : discord.Member):
 @client.command()
 async def now(ctx):
 
-    await ctx.send(f"According to the host it's {datetime.datetime.now()}")
+    getcurrent = datetime.datetime.now()
+    fd = getcurrent.strftime("%H")
+    fd = int(fd) + 2
+    mine = getcurrent.strftime('%M')
+    await ctx.send(f"According to the host it's {fd}:{int(mine)}")
 
 
 @client.command()
@@ -640,7 +642,7 @@ async def r_pung(ctx, member : discord.Member):
         await ctx.send(f"Bye bitch <@{ctx.message.mentions[0].id}>")
 
 
-'''
+
 definers = []
 @client.command()
 async def append(ctx,*,extender):
@@ -680,7 +682,6 @@ async def pung(ctx, member : discord.Member):
             await ctx.send(f"PING <@{ctx.message.mentions[0].id}>")
             await ctx.send(f"PENG <@{ctx.message.mentions[0].id}>")
             await ctx.send(f"PONG <@{ctx.message.mentions[0].id}>")
-'''
 
 @client.command()
 async def pfp(ctx,member: discord.Member):
@@ -784,4 +785,4 @@ async def on_message(message: discord.Message):
 
 
 
-client.run('#')
+client.run('------------------------------')
